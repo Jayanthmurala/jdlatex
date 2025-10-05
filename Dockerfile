@@ -1,13 +1,13 @@
 FROM node:18-bullseye-slim 
 
-# Install pdflatex + libpng and other necessary TeX Live packages
+# Install LaTeX with fonts and extras, including necessary binaries and libpng
 RUN apt-get update && apt-get install -y --no-install-recommends \
     texlive-latex-base \
     texlive-latex-recommended \
     texlive-latex-extra \
     texlive-fonts-recommended \
     texlive-fonts-extra \
-    texlive-xetex \
+    lmodern \
     texlive-binaries \
     latexmk \
     ghostscript \
