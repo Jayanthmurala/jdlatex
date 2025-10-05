@@ -31,11 +31,18 @@ app.post('/compile', async (req, res) => {
     // Compile LaTeX using pdflatex
     exec(`pdflatex -interaction=nonstopmode -output-directory=${tempDir} ${texFile}`, 
       (error, stdout, stderr) => {
-        if (error && !fs.existsSync(pdfFile)) {
+        if (error || !fs.existsSync(pdfFile)) {
+          console.error(`LaTeX compilation error: ${error ? error.message : 'PDF not found'}`);
+          console.error(`stdout: ${stdout}`);
+          console.error(`stderr: ${stderr}`);
           fs.rmSync(tempDir, { recursive: true, force: true });
           return res.status(500).json({ 
             error: 'LaTeX compilation failed',
-            details: stderr || error.message 
+            details: {
+              message: error ? error.message : 'PDF file not generated.',
+              stdout: stdout,
+              stderr: stderr
+            }
           });
         }
 
