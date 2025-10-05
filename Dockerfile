@@ -1,19 +1,39 @@
-FROM node:18
-
-# Install TeX Live
-RUN apt-get update && apt-get install -y \
-    texlive-latex-base \
-    texlive-latex-extra \
-    texlive-fonts-recommended \
-    texlive-fonts-extra \
-    && rm -rf /var/lib/apt/lists/*
+FROM node:18 AS node_builder
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+RUN npm install --production
 
 COPY . .
+
+# Stage 2: Install minimal TeX Live
+FROM debian:stable-slim AS texlive_installer
+
+# Install a minimal TeX Live distribution
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    texlive-base \
+    texlive-latex-base \
+    texlive-fonts-recommended \
+    texlive-binaries \
+    latexmk \
+    # Clean up apt cache to reduce image size
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Stage 3: Final runtime image
+FROM node:18-slim
+
+# Copy TeX Live binaries and libraries from the texlive_installer stage
+COPY --from=texlive_installer /usr/bin/pdflatex /usr/bin/pdflatex
+COPY --from=texlive_installer /usr/bin/latexmk /usr/bin/latexmk
+COPY --from=texlive_installer /usr/share/texlive /usr/share/texlive
+COPY --from=texlive_installer /etc/texmf /etc/texmf
+
+# Copy the Node.js application from the node_builder stage
+WORKDIR /app
+COPY --from=node_builder /app .
 
 # Cloud Run will set PORT environment variable
 ENV PORT=8080
