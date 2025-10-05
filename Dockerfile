@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
      latexmk \
      libpng16-16 \
      && ldconfig \
+     && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/ \
      && apt-get clean \
      && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
