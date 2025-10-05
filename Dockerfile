@@ -15,6 +15,9 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 3000
+# Cloud Run will set PORT environment variable
+ENV PORT=8080
+
+EXPOSE 8080
 
 CMD ["npm", "start"]

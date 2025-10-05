@@ -19,18 +19,8 @@ app.post('/compile', async (req, res) => {
       return res.status(400).json({ error: 'No LaTeX code provided' });
     }
 
-    // For Vercel deployment, we need to inform users that LaTeX compilation
-    // is not supported in serverless environments
-    if (process.env.VERCEL) {
-      return res.status(200).json({
-        message: "LaTeX compilation is not supported in Vercel's serverless environment.",
-        info: "This API endpoint requires LaTeX to be installed, which is not available on Vercel. Consider using a different hosting provider that supports Docker or custom runtime environments."
-      });
-    }
-
     const timestamp = Date.now();
-    // Use /tmp for production or os.tmpdir() for Vercel and local development
-    const tempDir = path.join(process.env.VERCEL ? require('os').tmpdir() : '/tmp', `latex-${timestamp}`);
+    const tempDir = path.join('/tmp', `latex-${timestamp}`);
     const texFile = path.join(tempDir, 'main.tex');
     const pdfFile = path.join(tempDir, 'main.pdf');
 
