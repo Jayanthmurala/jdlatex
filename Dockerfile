@@ -11,17 +11,16 @@ COPY . .
 FROM debian:stable-slim AS texlive_installer
 
 # Install a minimal TeX Live distribution
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    texlive-base \
-    texlive-latex-base \
-    texlive-fonts-recommended \
-    texlive-binaries \
-    latexmk \
-    libpng16-16 \
-    # Clean up apt cache to reduce image size
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+     texlive-base \
+     texlive-latex-base \
+     texlive-fonts-recommended \
+     texlive-binaries \
+     latexmk \
+     libpng16-16 \
+     && ldconfig \
+     && apt-get clean \
+     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Stage 3: Final runtime image
 FROM node:18-slim
