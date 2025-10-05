@@ -7,6 +7,9 @@ const app = express();
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.text({ limit: '10mb' }));
+app.get('/', (req, res) => {
+  res.send('LaTeX to PDF API is running');
+});
 
 app.post('/compile', async (req, res) => {
   try {
