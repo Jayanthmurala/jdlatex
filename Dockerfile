@@ -8,7 +8,7 @@ RUN npm install --production
 COPY . .
 
 # Stage 2: Install minimal TeX Live
-FROM debian:stable-slim AS texlive_installer
+FROM ubuntu:latest AS texlive_installer
 
 # Install a minimal TeX Live distribution
 RUN apt-get update && apt-get install -y --no-install-recommends \
