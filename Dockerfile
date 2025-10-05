@@ -18,6 +18,7 @@ RUN apt-get update && \
     texlive-fonts-recommended \
     texlive-binaries \
     latexmk \
+    libpng-dev \
     # Clean up apt cache to reduce image size
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
